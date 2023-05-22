@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Film Recomendation AI</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="http://fonts.googleapis.com/css?family=Josefin+Sans&subset=latin,latin-ext" rel="stylesheet">
+</head>
+
+<body>
+
+<header id="header">
+    <h1 id="header_logo">Film Recomendation AI</h1>
+    <form class="form" th:action="@{/}" th:object="${film}" method="POST">
+        <input class="input" placeholder="Enter name of film" required="" type="text" th:field="*{name}" autocomplete="off">
+        <span class="input-border"></span>
+        <button class="button" type="submit">Search</button>
+    </form>
+</header>
+
+<article id="main">
+    <h1 th:text = "${error}"></h1>
+    <div class="card-box" th:each ="filmItem : ${filmList}">
+        <div class="card">
+            <img class="film-image" th:src="${filmItem.getUrlImage()}">
+            <h2 th:text = "${filmItem.getStringedNameOfFilm()}">Film Name</h2>
+            <h2 th:text = "${filmItem.getIMDBRating()}">Rating IMDB</h2>
+        </div>
+    </div>
+</article>
+
+
+<footer id="footer">
+    <h2>©Andrii Moshchuk 2023</h2>
+
+</footer>
+
+</body>
+
+</html>
