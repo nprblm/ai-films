@@ -36,9 +36,9 @@ public class GPTFilms {
                 "  year of release and IMDB rating. The output should be in JSON format," +
                 " have class films and fields name, year, rating_imdb. name must be string, year must be int and rating_imdb must be float", film.getName());
 
-        ChatGPTResponse chatCPTResponse = chatGPTService.getChatCPTResponse(prompt);
+        ChatGPTResponse chatGPTResponse = chatGPTService.getChatGPTResponse(prompt);
 
-        String jsonString = chatCPTResponse.getChoices().get(0).getMessage().getContent();
+        String jsonString = chatGPTResponse.getChoices().get(0).getMessage().getContent();
         try {
             jsonString = jsonString.substring(jsonString.indexOf("{"), jsonString.lastIndexOf("}") + 1);
             filmsList = fromJSONSTringToList(jsonString);
@@ -60,7 +60,7 @@ public class GPTFilms {
     }
 
     private String getImageUrl(String filmName, int filmYear) {
-        String prompt = String.format("https://imdb8.p.rapidapi.com/auto-complete?q=%s(%d)", filmName.replace(" ", "_"), filmYear);
+        String prompt = String.format("https://imdb8.p.rapidapi.com/auto-complete?q=%s(%d)", filmName.replace(" ", "%"), filmYear);
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(prompt))

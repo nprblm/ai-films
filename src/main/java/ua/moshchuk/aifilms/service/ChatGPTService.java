@@ -23,7 +23,7 @@ public class ChatGPTService {
 
     private static final String OPEN_AI_CHAT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
-    public ChatGPTResponse getChatCPTResponse(String prompt) {
+    public ChatGPTResponse getChatGPTResponse(String prompt) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
