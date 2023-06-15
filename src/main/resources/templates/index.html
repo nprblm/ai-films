@@ -15,29 +15,26 @@
 <header id="header">
     <h1 id="header_logo">Film Recomendation AI</h1>
     <form class="form" th:action="@{/}" th:object="${film}" method="POST">
-        <input class="input" placeholder="Enter name of film" required="" type="text" th:field="*{name}" autocomplete="off">
+        <input class="input" placeholder="Enter name of film" required="" type="text" th:field="*{name}"
+               autocomplete="off">
         <span class="input-border"></span>
         <button class="button" type="submit">Search</button>
     </form>
 </header>
 
 <article id="main">
-    <h1 th:text = "${error}"></h1>
-    <div class="card-box" th:each ="filmItem : ${filmList}">
+    <h1 th:text="${error}"></h1>
+    <div class="card-box" th:each="filmItem : ${filmList}">
         <div class="card">
             <img class="film-image" th:src="${filmItem.getUrlImage()}">
-            <h2 th:text = "${filmItem.getStringedNameOfFilm()}">Film Name</h2>
-            <h2 th:text = "${filmItem.getIMDBRating()}">Rating IMDB</h2>
+            <h2 th:text="${filmItem.getStringedNameOfFilm()}">Film Name</h2>
+            <h2 th:text="${filmItem.getIMDBRating()}">Rating IMDB</h2>
         </div>
     </div>
 </article>
 
-
 <footer id="footer">
     <h2>©Andrii Moshchuk 2023</h2>
-
 </footer>
-
 </body>
-
 </html>

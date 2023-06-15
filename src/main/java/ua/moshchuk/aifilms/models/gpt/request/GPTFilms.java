@@ -60,7 +60,7 @@ public class GPTFilms {
     }
 
     private String getImageUrl(String filmName, int filmYear) {
-        String prompt = String.format("https://imdb8.p.rapidapi.com/auto-complete?q=%s(%d)", filmName.replace(" ", "%"), filmYear);
+        String prompt = String.format("https://imdb8.p.rapidapi.com/auto-complete?q=%s(%d)", filmName.replace(" ", "_"), filmYear);
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(prompt))
