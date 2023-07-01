@@ -18,23 +18,48 @@
         <input class="input" placeholder="Enter name of film" required="" type="text" th:field="*{name}"
                autocomplete="off">
         <span class="input-border"></span>
-        <button class="button" type="submit">Search</button>
+        <button id="search-button" class="button" type="submit">Search</button>
     </form>
 </header>
 
 <article id="main">
-    <h1 th:text="${error}"></h1>
-    <div class="card-box" th:each="filmItem : ${filmList}">
-        <div class="card">
-            <img class="film-image" th:src="${filmItem.getUrlImage()}">
-            <h2 th:text="${filmItem.getStringedNameOfFilm()}">Film Name</h2>
-            <h2 th:text="${filmItem.getIMDBRating()}">Rating IMDB</h2>
+    <div id="main-block">
+        <h1 th:text="${error}"></h1>
+        <div class="card-box" th:each="filmItem : ${filmList}">
+            <div class="card">
+                <img class="film-image" th:src="${filmItem.getUrlImage()}">
+                <h2 th:text="${filmItem.getStringedNameOfFilm()}">Film Name</h2>
+                <h2 th:text="${filmItem.getIMDBRating()}">Rating IMDB</h2>
+            </div>
         </div>
+    </div>
+    <div id="loader" class="loader">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+        <div class="bar4"></div>
+        <div class="bar5"></div>
+        <div class="bar6"></div>
+        <div class="bar7"></div>
+        <div class="bar8"></div>
+        <div class="bar9"></div>
+        <div class="bar10"></div>
+        <div class="bar11"></div>
+        <div class="bar12"></div>
     </div>
 </article>
 
 <footer id="footer">
-    <h2>©Andrii Moshchuk 2023</h2>
+    <h2>©Vitalii Bella 2023</h2>
 </footer>
 </body>
 </html>
+
+<script>
+    const label = document.getElementById('main-block');
+    const button = document.getElementById('search-button');
+    button.addEventListener('click', () => {
+        label.remove();
+        document.getElementById("loader").style.visibility = "visible";
+    });
+</script>
