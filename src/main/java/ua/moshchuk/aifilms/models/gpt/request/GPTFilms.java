@@ -15,6 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 @Component
 public class GPTFilms {
@@ -32,7 +33,7 @@ public class GPTFilms {
         List<Film> filmsList = new ArrayList<>();
 
         String prompt = String.format("I like movies: %s. Based on my preferences," +
-                " find 5 movies that are similar in genre and plot that I would like and print their name in english," +
+                " find 10 movies that are similar in genre and plot that I would like and print their name in english," +
                 "  year of release and IMDB rating. The output should be in JSON format," +
                 " have class films and fields name, year, rating_imdb. name must be string, year must be int and rating_imdb must be float", film.getName());
 
@@ -52,22 +53,39 @@ public class GPTFilms {
         List<Film> resultList = new ArrayList<>();
         final JSONObject obj = new JSONObject(jsonString);
         final JSONArray films = obj.getJSONArray("films");
-        final Thread[] threads = new Thread[films.length()];
+
+        final ExecutorService service = Executors.newFixedThreadPool(10);
+        final Future<Film>[] tasks = new Future[films.length()];
+
         for (int i = 0; i < films.length(); ++i) {
             final JSONObject item = films.getJSONObject(i);
-            threads[i] = new Thread(()-> resultList.add(new Film(
+            final Film film = new Film(
                     item.getString("name"),
                     item.getInt("year"),
-                    item.getFloat("rating_imdb"),
-                    getImageUrl(item.getString("name"), item.getInt("year"))
-            )));
-            threads[i].start();
+                    item.getFloat("rating_imdb"),null);
+            resultList.add(film);
+            tasks[i] = service.submit(new Task(film));
         }
-        try {
-            waitForThreadsFinish(threads);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        resultList.clear();
+
+        for(Future<Film> future: tasks)
+        {
+            while(!future.isDone())
+            {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try{
+                resultList.add(future.get());
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+        service.shutdown();
+
         return resultList;
     }
 
@@ -91,10 +109,18 @@ public class GPTFilms {
         }
     }
 
-    private void waitForThreadsFinish(final Thread[] threads) throws InterruptedException
-    {
-        for (Thread thread : threads) {
-            thread.join();
+    private final class Task implements Callable<Film>{
+
+        private final Film film;
+
+        public Task(Film film) {
+            this.film = film;
+        }
+
+        @Override
+        public Film call() throws Exception {
+            film.setUrlImage(getImageUrl(film.getName(), film.getYear()));
+            return film;
         }
     }
 
