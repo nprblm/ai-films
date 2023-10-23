@@ -52,9 +52,21 @@ public class GPTFilms {
         List<Film> resultList = new ArrayList<>();
         final JSONObject obj = new JSONObject(jsonString);
         final JSONArray films = obj.getJSONArray("films");
+        final Thread[] threads = new Thread[films.length()];
         for (int i = 0; i < films.length(); ++i) {
             final JSONObject item = films.getJSONObject(i);
-            resultList.add(new Film(item.getString("name"), item.getInt("year"), item.getFloat("rating_imdb"), getImageUrl(item.getString("name"), item.getInt("year"))));
+            threads[i] = new Thread(()-> resultList.add(new Film(
+                    item.getString("name"),
+                    item.getInt("year"),
+                    item.getFloat("rating_imdb"),
+                    getImageUrl(item.getString("name"), item.getInt("year"))
+            )));
+            threads[i].start();
+        }
+        try {
+            waitForThreadsFinish(threads);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
         return resultList;
     }
@@ -76,6 +88,13 @@ public class GPTFilms {
             return item.getJSONObject("i").getString("imageUrl");
         } catch (Exception e) {
             return "Error";
+        }
+    }
+
+    private void waitForThreadsFinish(final Thread[] threads) throws InterruptedException
+    {
+        for (Thread thread : threads) {
+            thread.join();
         }
     }
 
